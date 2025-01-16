@@ -1,9 +1,12 @@
-package com.example.my;
+package com.example.lv4;
 
 public class MenuItem {
-    private final String name;
-    private final double price;
-    private final String description;
+    private String name;
+    private double price;
+    private String description;
+
+    public MenuItem() {
+    }
 
     public MenuItem(String name, double price, String description) {
         this.description = description;
