@@ -1,4 +1,4 @@
-package com.example.lv5;
+package com.example.lv5_1;
 
 public class Main {
     public static void main(String[] args) {
