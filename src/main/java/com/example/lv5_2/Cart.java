@@ -1,4 +1,4 @@
-package com.example.lv5;
+package com.example.lv5_2;
 
 public class Cart {
     private final MenuItem menuItem;
@@ -11,6 +11,11 @@ public class Cart {
 
     public void addOrder(double totalPrice) {
         this.quantity++;
+        this.price = totalPrice;
+    }
+
+    public void delOrder(double totalPrice) {
+        this.quantity--;
         this.price = totalPrice;
     }
 
