@@ -1,4 +1,4 @@
-package com.example.lv5_2;
+package com.example.lv6_2;
 
 public class Cart {
     private final MenuItem menuItem;
