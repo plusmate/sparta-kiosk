@@ -1,4 +1,4 @@
-package com.example.lv5_1;
+package com.example.lv6_2;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -11,10 +11,12 @@ public class Kiosk {
     int chooseCart = -1;
     int chooseFood = -1;
     int chooseOrder = -1;
+    int chooseDiscount = -1;
     Menu menu;
     MenuItem selectedItem;
     List<MenuItem> menuList;
     List<Cart> cartList =  new ArrayList<>();
+    DiscountType[] discountTypes;
     double totalPrice = 0;
 
     public void start() {
@@ -33,9 +35,10 @@ public class Kiosk {
 
                 if (!cartList.isEmpty()) {
                     /* 장바구니 목록 출력 */
-                    System.out.println("\n [ ORDER MENU ]");
+                    System.out.println("\n[ ORDER MENU ]");
                     System.out.println(allMenus.size()+1 + ". Orders       | 장바구니를 확인 후 주문합니다.");
                     System.out.println(allMenus.size()+2 + ". Cancel       | 진행중인 주문을 취소합니다.");
+                    System.out.println(allMenus.size()+3 + "  Delete       | 장바구니 목록에서 삭제합니다.");
                 }
 
                 chooseMain = sc.nextInt();
@@ -48,7 +51,6 @@ public class Kiosk {
                     return;
                 } else if (chooseMain <= allMenus.size()) {
                     /* 음식 종류 선택 완료 */
-//                    while (chooseFood != 0) {
                     while (true) {
                         menu = allMenus.get(chooseMain - 1);
                         FoodType foodType = menu.getFoodType();
@@ -118,7 +120,6 @@ public class Kiosk {
                                 } else if (chooseCart == 2) {
                                     /* 장바구니 입력 취소 로직 */
                                     System.out.println("장바구니를 취소합니다.");
-//                                    System.out.println("장바구니에 " + selectedItem.getName() + "");
                                     System.out.println("첫 주문 화면으로 이동합니다.\n");
                                     break; // 두번째 while문(음식 선택 로직)으로 이동
                                 } else {
@@ -146,19 +147,46 @@ public class Kiosk {
                         }
 
                         /* 총 합계 확인  */
-                        System.out.println("\n [ Total ]");
+                        System.out.println("[ Total ]");
                         System.out.println("W " + totalPrice + "\n");
 
                         /* 주문 확인 로직 */
                         System.out.println("1. 주문      2. 메뉴판");
                         sc.nextLine(); // 버퍼 제거
                         chooseOrder = sc.nextInt();
+                        System.out.println();
+
                         if (chooseOrder == 1) {
-                            /* 주문 완료 로직 */
-                            System.out.println("주문이 완료되었습니다. 금액은 W " + totalPrice + " 입니다.");
-                            System.out.println("주문 완료된 장바구니를 초기화합니다.\n");
-                            clearMenuList();
-                            break;
+                            while (true) {
+                                /* 할인정보 출력 */
+                                System.out.println("할인 정보를 입력해주세요.");
+                                discountTypes = DiscountType.values();
+                                for (int i = 0; i < discountTypes.length; i++) {
+                                    System.out.println(i+1 + ". " +
+                                            discountTypes[i] + " : " +
+                                            discountTypes[i].getDiscountRate() + "% ");
+                                }
+                                sc.nextLine();  // 버퍼 제거
+                                chooseDiscount = sc.nextInt(); // 할인율 입력
+                                System.out.println();
+                                if (chooseDiscount <= discountTypes.length) {
+                                    /* 할인율 적용 로직 */
+                                    double discountRate = discountTypes[chooseDiscount - 1].getDiscountRate();
+                                    totalPrice = totalPrice - (totalPrice * discountRate);
+
+                                    /* 주문 완료 로직 */
+                                    System.out.println("주문이 완료되었습니다. 금액은 W " + totalPrice + " 입니다.");
+                                    System.out.println("주문 완료된 장바구니를 초기화합니다.\n");
+                                    clearMenuList();
+
+                                    break;
+                                } else {
+                                    /* 할인율 입력 예외 로직 */
+                                    System.out.println("선택지의 숫자만 입력해주세요.");
+                                    System.out.println("할인율 입력 화면으로 이동합니다.\n");
+                                }
+                            }
+                            break; // 초기화면으로 이동
                         } else if (chooseOrder == 2) {
                             /* 주문 취소 로직 */
                             System.out.println("메뉴판으로 이동합니다. \n");
@@ -171,12 +199,44 @@ public class Kiosk {
                     /* 주문 취소 로직 (장바구니 초기화) */
                     System.out.println("장바구니를 초기화합니다. \n");
                     clearMenuList();
+                } else if (!cartList.isEmpty() && chooseMain == allMenus.size()+3) {
+                    while (true) {
+                        /* 장바구니에서 특정 상품 삭제 로직 */
+                        System.out.println("[ 장바구니 목록 ]");
+                        for (Cart cart : cartList) {
+                            MenuItem item = cart.getMenuItem();
+                            System.out.println(item.getName() + "*" + cart.getQuantity());
+                        }
+                        System.out.println("장바구니에서 삭제할 상품 명을 입력하세요.");
+                        String chooseDeleteItem = sc.next(); // 삭제할 상품명 입력
+                        List<Cart> collect = cartList.stream()
+                                .filter(ele -> ele.getMenuItem().getName().equals(chooseDeleteItem))
+                                .toList(); // 사용자가 입력한 값이 같은 객체를 collect에 대입
+                        if (!collect.isEmpty()) {
+                            /* 삭제 정상 로직 */
+                            Cart removeItem = collect.get(0);
+                            if (removeItem.getQuantity() >= 2) {
+                                /* 삭제할 상품의 주문 수량이 2개 이상 -> 수량 1개 감소 */
+                                totalPrice -= removeItem.getMenuItem().getPrice();
+                                removeItem.delOrder(totalPrice);
+                            } else {
+                                /* 삭제할 상품이 단품 주문일 경우 -> 해당 상품 삭제 */
+                                totalPrice -= removeItem.getMenuItem().getPrice();
+                                cartList.remove(removeItem);
+                            }
+                            break;
+                        } else {
+                            /* 잘못 입력한 예외 처리 */
+                            System.out.println("장바구니에 해당 상품이 없습니다. 다시 입력하세요.\n");
+                        }
+                    }
                 } else {
                     System.out.println("선택지의 숫자만 입력해주세요.");
                     System.out.println("첫 화면으로 이동합니다.\n");
                 }
             } catch (InputMismatchException e) {
-                System.out.println("숫자만 입력해 주세요. \n");
+                System.out.println("숫자만 입력해 주세요.\n");
+                System.out.println("첫 화면으로 이동합니다.\n");
                 sc.nextLine(); // 입력 버퍼를 비워줌
             } catch (IndexOutOfBoundsException e) {
                 System.out.println("IndexOutOfBoundsException) 선택지의 숫자만 입력해주세요. \n");

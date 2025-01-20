@@ -1,4 +1,4 @@
-package com.example.lv5_1;
+package com.example.lv6_2;
 
 public class Main {
     public static void main(String[] args) {
@@ -12,19 +12,20 @@ public class Main {
 
         Menu drinkMenu = new Menu(
                 FoodType.Drink,
-                new MenuItem("아메리카노", 5, "진하게 우려낸 아메리카노"),
-                new MenuItem("아메리카노(아이스)", 5.5, "진하게 우려낸 아메리카노 - 아이스"),
-                new MenuItem("제로 콜라", 2, "제로콜라(펩시)"),
-                new MenuItem("콜라", 2, "콜라(펩시)")
+                new MenuItem("Americano", 5, "진하게 우려낸 아메리카노"),
+                new MenuItem("IcedAmericano", 5.5, "진하게 우려낸 아메리카노 - 아이스"),
+                new MenuItem("ZeroCola", 2, "제로콜라(펩시)"),
+                new MenuItem("Cola", 2, "콜라(펩시)")
         );
 
         Menu dessertMenu = new Menu(
                 FoodType.Dessert,
-                new MenuItem("민트초코 아이스크림", 6, "반 민초파도 좋아할 민트초코 아이스크림"),
-                new MenuItem("벌꿀 아이스크림", 5.5, "꿀벌집이 그대로, 달달한 벌꿀 아이스크림"),
-                new MenuItem("초코케이크", 2, "달달한 초코케이크"),
-                new MenuItem("티라미수케익", 2, "커피향 가득 티라미수케익")
+                new MenuItem("MintChocolateIceCream", 6, "반 민초파도 좋아할 민트초코 아이스크림"),
+                new MenuItem("HoneyIceCream", 5.5, "꿀벌집이 그대로, 달달한 벌꿀 아이스크림"),
+                new MenuItem("ChocolateCake", 2, "달달한 초코케이크"),
+                new MenuItem("TiramisuCake", 2, "커피향 가득 티라미수케익")
         );
+
 
         new Kiosk().start();
 

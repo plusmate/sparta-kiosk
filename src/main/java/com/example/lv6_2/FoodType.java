@@ -1,4 +1,4 @@
-package com.example.lv4;
+package com.example.lv6_2;
 
 public enum FoodType {
     Burger, Drink, Dessert;
